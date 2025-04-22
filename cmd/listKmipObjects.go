@@ -1,0 +1,153 @@
+/*
+ Copyright 2020-2025 Entrust Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package cmd
+
+import (
+    // standard
+    "os"
+    "fmt"
+    "bytes"
+    "strings"
+    "encoding/json"
+    
+    
+    // external
+    "github.com/spf13/cobra"
+)
+
+
+// listKmipObjectsCmd represents the list-kmip-objects command
+var listKmipObjectsCmd = &cobra.Command{
+    Use:   "list-kmip-objects",
+    Short: "List all Kmip Objects",
+    Run: func(cmd *cobra.Command, args []string) {
+        flags := cmd.Flags()
+        params := map[string]interface{}{}
+        filterParams := []interface{}{}
+
+        allowedFilters := map[string]bool {
+            "uuid": true,
+            "created_at": true,
+            "lastmod_at": true,
+            "archived_at": true,
+            "State": true,
+            "type": true,
+        }
+
+        
+
+        maxItems, _ := flags.GetInt("max-items")
+        params["max_items"] = maxItems
+
+        offset, _ := flags.GetInt("start-offset")
+        params["offset"] = offset
+
+        // sort by
+        if flags.Changed("sort-by") {
+            sortby, _ := flags.GetString("sort-by")
+            params["sort_by"] = sortby
+        }
+
+        // filter
+        if flags.Changed("filter") {
+            filters, _ := flags.GetStringArray("filter")
+            for i := 0; i < len(filters); i +=1 {
+                filter := strings.Split(filters[i], "||")
+
+                // remove trailing/leading whitespace
+                for index := range filter {
+                    filter[index] = strings.TrimSpace(filter[index])
+                }
+
+                if len(filter) != 3 {
+                    fmt.Printf("\nInvalid filter argument: %s\n", filters[i])
+                    os.Exit(1)
+                }
+
+                filterMap := map[string]interface{}{}
+                filterMap["field"] = filter[0]
+                if _, ok := allowedFilters[filter[0]]; ok {
+                    filterMap["op"] = filter[1]
+                    filterMap["value"] = filter[2]
+                } else {
+                    fmt.Println("Invalid filter type")
+                    os.Exit(1)
+                }
+
+                filterParams = append(filterParams, filterMap)
+            }
+
+            params["filters"] = filterParams
+        }
+
+        // JSONify
+        jsonParams, err := json.Marshal(params)
+        if (err != nil) {
+            fmt.Println("Error building JSON request: ", err)
+            os.Exit(1)
+        }
+
+        // now POST
+        endpoint := GetEndPoint("", "1.0", "ListKmipObjects")
+        ret, err := DoPost(endpoint,
+                               GetCACertFile(),
+                               AuthTokenKV(),
+                               jsonParams,
+                               "application/json")
+        if err != nil {
+            fmt.Printf("\nHTTP request failed: %s\n", err)
+            os.Exit(4)
+        } else {
+            // type assertion
+            retBytes := ret["data"].(*bytes.Buffer)
+            retStatus := ret["status"].(int)
+            retStr := retBytes.String()
+
+            if (retStr == "" && retStatus == 404) {
+                fmt.Println("\nAction denied\n")
+                os.Exit(5)
+            }
+
+            fmt.Println("\n" + retStr + "\n")
+
+            // make a decision on what to exit with
+            retMap := JsonStrToMap(retStr)
+            if _, present := retMap["error"]; present {
+                os.Exit(3)
+            } else {
+                os.Exit(0)
+            }
+        }
+    },
+}
+
+func init() {
+    rootCmd.AddCommand(listKmipObjectsCmd)
+    listKmipObjectsCmd.Flags().IntP("start-offset", "o", 0,
+                                 "Starting offset of the entire list to return")
+    listKmipObjectsCmd.Flags().IntP("max-items", "m", 0,
+                              "Maximum number of items to include " +
+                              "in the response")
+    listKmipObjectsCmd.Flags().StringP("sort-by", "s", "",
+        "Attribute with which the list of objects should be sorted with")
+    listKmipObjectsCmd.Flags().StringArrayP("filter", "f", []string{},
+        "|| separated string containing filter field, " +
+        "operation and value of the field to be filtered")
+
+    listKmipObjectsCmd.MarkFlagRequired("start-offset")
+    listKmipObjectsCmd.MarkFlagRequired("max-items")
+}
