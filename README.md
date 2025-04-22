@@ -1,4 +1,4 @@
-#kmipcli
+# kmipcli
 
 kmipmcli is a command line tool to manage, control Entrust KMIP type Vault. All vault management operation, e.g user management, KMIP key operations(e.g.: revoke, destroy, rekey), HSM Management, KMIP Client certificate management, can be done by kmipcli. 
 
@@ -13,7 +13,7 @@ Entrust KMIP vault provides secure storage in addition to all key management fea
 
 kmipcli's for Linux & Windows for each release can be found in Releases section (https://github.com/EntrustCorporation/kmipcli/releases) 
 
-##Build instruction
+## Build instruction
 
 The code in this repo corresponds to the latest released version of kmipcli. In general, to use kmipcli, head over to Releases section to get pre-compiled binaries. If you do plan to build, follow instructions below.
 
