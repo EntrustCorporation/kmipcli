@@ -36,78 +36,138 @@ For more information, see the Secrets Vault chapter in the Key Management System
 
 ##Usage examples
 
-Login to KMIP vault: 
+Login to KMIP vault:
+
 ```$./kmipcli login  -u "username"  -p "password"  --login-URL <VAULT_API_URL>  --cacert ca.cert```
 
-Create KMIP client certificate: 
+Create KMIP client certificate:
+
 ```$./kmipcli create-client-cert  --name "client-cert-name"  --expiry-days "expiry_days_in_int"```
 
-Get client certificate details: 
+Get client certificate details:
+
 ```$./kmipcli get-client-cert  -c "client-cert-name"```
 
-Download kmip client certificate: 
+Download kmip client certificate:
+
 ```$./kmipcli download-client-cert  -c "client-cert-name"```
 
-Delete kmip client certificate: 
+Delete kmip client certificate:
+
 ```$./kmipcli delete-client-cert -c "client-cert-name"```
 
-List kmip vault local user : 
+List kmip vault local user :
+
 ```$./kmipcli list-local-users```
 
-Get KMIP policy details: 
+Get KMIP policy details:
+
 ```$./kmipcli list-policies```
 
 Other Available Commands:
+
   change-ad-domain                Change Active Directory Domain
+  
   configure-hpcs-kek              Configure Encrypting KMIP objects using KEK stored in IBM Hyper Protect Crypto Services
+  
   configure-hsm-kek               Configure Encrypting KMIP objects using KEK stored in system HSM
+  
   create-client-cert              Create a Kmip Client Certificate
+  
   create-local-user               Create a Local User
+  
   create-personal-access-token    Create a Personal Access Token
+  
   create-policy                   Create a Kmip Policy
+  
   delete-client-cert              Delete Kmip Client Certificate
+  
   delete-local-user               Delete a Local User
+  
   delete-personal-access-token    Delete a Personal Access Token
+  
   delete-policy                   Delete Policy
+  
   disable-kmip-kek                Disable encrypting KMIP objects using KEK
+  
   download-audit                  Download audit log bundle
+  
   download-client-cert            Download Kmip Client Certificate
+  
   get-ad-group                    Search Active Directory group
+  
   get-ad-setting                  Get AD Setting details
+  
   get-ad-user                     Search Active Directory users
+  
   get-audit-message-template      Given a message id, get corresponding audit message template
+  
   get-audit-setting               Get audit settings
+  
   get-client-cert                 Get Kmip Client Certificate details
+  
   get-hsm-info                    Get System HSM configuration details
+  
   get-kek-setting                 Get KMIP KEK settings
+  
   get-kmip-object                 Get Kmip Object details
+  
   get-kmip-object-count           Get count of Kmip Objects
+  
   get-local-user                  Get Local User details
+  
   get-personal-access-token       Get Personal Access Token details
+  
   get-platform-info               Get Platform Info
+  
   get-policy                      Get Policy details
+  
   get-tenant-info                 Get Kmip Tenant Info
+  
   get-tenant-settings             Get Kmip Tenant settings
+  
   list-ad-settings                List all AD settings
+  
   list-audit-message-templates    List available audit messages templates
+  
   list-audit-messages             List all audit messages
+  
   list-client-certs               List all Kmip Client Certificate
+  
   list-kmip-objects               List all Kmip Objects
+  
   list-local-users                List all Local Users
+  
   list-personal-access-tokens     List Personal Access Tokens
+  
   list-policies                   List all Policies
+  
   list-policy-versions            List versions of a given Policy
+  
   locate-root-key                 Locate KMIP KEK Root Key
+  
   login                           Login to Kmip Tenant Portal
+  
   rekey-kmip-kek                  Rekey KMIP objects with new KEK
+  
   renew                           Renew Access Token
+  
   set-policy-version              Set a specific version of Policy to current
+  
   update-ad-setting               Update Active Directory Setting
+  
   update-audit-setting            Update audit settings
+  
   update-kmip-object              Update Kmip Object
+  
   update-local-user               Update a given Local User
+  
   update-personal-access-token    Update a Personal Access Token
+  
   update-policy                   Update a given Kmip Policy
+  
   update-tenant-auth-method-to-ad Update Tenant Auth Method To AD
+  
   update-tenant-settings          Update Kmip Tenant settings
+  
   version                         Version of Entrust KMIP tenant portal cli
