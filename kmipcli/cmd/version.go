@@ -17,22 +17,21 @@ limitations under the License.
 package cmd
 
 import (
-    // standard
-    "fmt"
-    // external
-    "github.com/spf13/cobra"
+	// standard
+	"fmt"
+	// external
+	"github.com/spf13/cobra"
 )
-
 
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
-    Use:   "version",
-    Short: "Version of Entrust KMIP tenant portal cli",
-    Run: func(cmd *cobra.Command, args []string) {
-        fmt.Println("1.0")
-    },
+	Use:   "version",
+	Short: "Version of Entrust KMIP Vault portal cli",
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("1.0")
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(versionCmd)
 }
