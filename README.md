@@ -24,7 +24,7 @@ The code in this repo corresponds to the latest released version of kmipcli. In 
   . Go should be installed at, /usr/local/go/bin/go. To find go binary, adjust PATH as, export PATH=$PATH:/usr/local/go/bin
 
 2. cd to kmipcli/
-3. To build Linux & Windows cli binaries,
+3. To build Linux cli binary,
 
    ```$ gmake all```
 
