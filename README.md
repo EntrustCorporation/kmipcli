@@ -11,13 +11,13 @@ Entrust KMIP vault provides secure storage in addition to all key management fea
 
 ## Releases
 
-kmipcli's for Linux & Windows for each release can be found in Releases section (https://github.com/EntrustCorporation/kmipcli/releases) 
+kmipcli for Linux for each release can be found in Releases section (https://github.com/EntrustCorporation/kmipcli/releases) 
 
 ## Build instruction
 
 The code in this repo corresponds to the latest released version of kmipcli. In general, to use kmipcli, head over to Releases section to get pre-compiled binaries. If you do plan to build, follow instructions below.
 
-1. Install go. pasmcli/Makefile expects to find go at /usr/local/go/bin/go
+1. Install go. kmipcli/Makefile expects to find go at /usr/local/go/bin/go
   . Check for latest stable Golang Linux version at https://go.dev/dl/
   . As root, do, wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
   . As root, tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
@@ -67,8 +67,6 @@ Get KMIP policy details:
 Other Available Commands:
 
   ```change-ad-domain```                Change Active Directory Domain
-  
-  ```configure-hpcs-kek```              Configure Encrypting KMIP objects using KEK stored in IBM Hyper Protect Crypto Services
   
   ```configure-hsm-kek```               Configure Encrypting KMIP objects using KEK stored in system HSM
   
