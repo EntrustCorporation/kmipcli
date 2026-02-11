@@ -1,3 +1,5 @@
+// +build !windows
+
 /*
  Copyright 2020-2025 Entrust Corporation
 
@@ -14,25 +16,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package cmd
+package getpasswd
 
 import (
-    // standard
-    "fmt"
-    // external
-    "github.com/spf13/cobra"
+	"strings"
+
+	"golang.org/x/term"
 )
 
-
-// versionCmd represents the version command
-var versionCmd = &cobra.Command{
-    Use:   "version",
-    Short: "Version of Entrust KMIP tenant portal cli",
-    Run: func(cmd *cobra.Command, args []string) {
-        fmt.Println("1.0")
-    },
-}
-
-func init() {
-    rootCmd.AddCommand(versionCmd)
+// ReadPassword reads password from stdin
+func ReadPassword() string {
+	bytePassword, err := term.ReadPassword(0)
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(bytePassword))
 }
