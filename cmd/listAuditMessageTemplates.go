@@ -27,12 +27,24 @@ import (
 )
 
 
-// getKmipInfoCmd represents the get-tenant-info command
-var getKmipInfoCmd = &cobra.Command{
-    Use:   "get-tenant-info",
-    Short: "Get Kmip Tenant Info",
+// listAuditMessageTemplatesCmd represents the list-audit-message command
+var listAuditMessageTemplatesCmd = &cobra.Command{
+    Use:   "list-audit-message-templates",
+    Short: "List available audit messages templates",
     Run: func(cmd *cobra.Command, args []string) {
+        flags := cmd.Flags()
         params := map[string]interface{}{}
+
+        // create request payload
+        if flags.Changed("max-items") {
+            maxItems, _ := flags.GetInt("max-items")
+            params["max_items"] = maxItems
+        }
+        
+        if flags.Changed("next-token") {
+            nextToken, _ := flags.GetString("next-token")
+            params["next_token"] = nextToken
+        }
 
         // JSONify
         jsonParams, err := json.Marshal(params)
@@ -42,7 +54,7 @@ var getKmipInfoCmd = &cobra.Command{
         }
 
         // now POST
-        endpoint := GetEndPoint("", "1.0", "GetTenantInfo")
+        endpoint := GetEndPoint("", "1.0", "ListAuditMessageTemplates")
         ret, err := DoPost(endpoint,
                                GetCACertFile(),
                                AuthTokenKV(),
@@ -58,7 +70,7 @@ var getKmipInfoCmd = &cobra.Command{
             retStr := retBytes.String()
 
             if (retStr == "" && retStatus == 404) {
-                fmt.Println("\nKmip not found\n")
+                fmt.Println("\nAudit message templates not found\n")
                 os.Exit(5)
             }
 
@@ -76,5 +88,11 @@ var getKmipInfoCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(getKmipInfoCmd)
+    rootCmd.AddCommand(listAuditMessageTemplatesCmd)
+    listAuditMessageTemplatesCmd.Flags().IntP("max-items", "m", 0,
+                               "Maximum number of items to include in " +
+                               "response")
+    listAuditMessageTemplatesCmd.Flags().StringP("next-token", "n", "",
+                                  "Token from which subsequent Audit " +
+                                  "messages would be listed")
 }

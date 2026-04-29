@@ -22,47 +22,41 @@ import (
     "fmt"
     "bytes"
     "encoding/json"
-    
-    
     // external
     "github.com/spf13/cobra"
 )
 
-
-// ConfigureHPCSKEK represents the configure-hpcs-kek command
-var ConfigureHPCSKEK = &cobra.Command{
-    Use:   "configure-hpcs-kek",
-    Short: "Configure Encrypting KMIP objects using KEK stored in IBM Hyper Protect Crypto Services",
+// updateLocalUserCmd represents the update-local-user command
+var updateLocalUserCmd = &cobra.Command{
+    Use:   "update-local-user",
+    Short: "Update a given Local User",
     Run: func(cmd *cobra.Command, args []string) {
         flags := cmd.Flags()
         params := map[string]interface{}{}
 
-        
+        // create request payload
+        user, _ := flags.GetString("user")
+        params["username"] = user
 
-        // revision
         revision, _ := flags.GetInt("revision")
         params["revision"] = revision
 
-        params["hsm_type"] = "HPCS"
-
-        hpcs_url, _ := flags.GetString("hpcs_url")
-        params["hpcs_url"] = hpcs_url
-
-        hpcs_api_key, _ := flags.GetString("hpcs_api_key")
-        params["hpcs_api_key"] = hpcs_api_key
-
-        hpcs_instance_id, _ := flags.GetString("hpcs_instance_id")
-        params["hpcs_instance_id"] = hpcs_instance_id
-
-        if flags.Changed("hpcs_root_key_id") {
-            hpcs_root_key_id, _ := flags.GetString("hpcs_root_key_id")
-            params["hpcs_root_key_id"] = hpcs_root_key_id
+        if flags.Changed("name") {
+            name, _ := flags.GetString("name")
+            charCheck(len(name))
+            params["name"] = name
         }
 
-        if flags.Changed("kek_cache_timeout") {
-            //kek_cache_timeout
-            kek_cache_timeout, _ := flags.GetInt("kek_cache_timeout")
-            params["kek_cache_timeout"] = kek_cache_timeout
+        if flags.Changed("account-status") {
+            accountStatus, _ := flags.GetString("account-status")
+            if accountStatus == "enable" {
+                params["account_state"] = true
+            } else if accountStatus == "disable" {
+                params["account_state"] = false
+            } else {
+                fmt.Printf("\n Valid values: enable or disable")
+                os.Exit(1)
+            }
         }
 
         // JSONify
@@ -73,7 +67,7 @@ var ConfigureHPCSKEK = &cobra.Command{
         }
 
         // now POST
-        endpoint := GetEndPoint("", "1.0", "UpdateKEKSetting")
+        endpoint := GetEndPoint("", "1.0", "UpdateLocalUser")
         ret, err := DoPost(endpoint,
                                GetCACertFile(),
                                AuthTokenKV(),
@@ -89,7 +83,7 @@ var ConfigureHPCSKEK = &cobra.Command{
             retStr := retBytes.String()
 
             if (retStr == "" && retStatus == 404) {
-                fmt.Println("\nTenant not found\n")
+                fmt.Println("\nUser not found\n")
                 os.Exit(5)
             }
 
@@ -107,22 +101,17 @@ var ConfigureHPCSKEK = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(ConfigureHPCSKEK)
-    ConfigureHPCSKEK.Flags().IntP("kek_cache_timeout", "t", 1800,
-                                    "KEK Cache Timeout")
-    ConfigureHPCSKEK.Flags().IntP("revision", "R", 0,
-                                 "KEK Setting revision number")
-    ConfigureHPCSKEK.Flags().StringP("hpcs_url", "u", "",
-                                    "HPCS URL")
-    ConfigureHPCSKEK.Flags().StringP("hpcs_api_key", "k", "",
-                                    "HPCS API Key")
-    ConfigureHPCSKEK.Flags().StringP("hpcs_instance_id", "i", "",
-                                    "HPCS Instance ID")
-    ConfigureHPCSKEK.Flags().StringP("hpcs_root_key_id", "r", "",
-                                    "KEK Rootkey ID")
+    rootCmd.AddCommand(updateLocalUserCmd)
+    updateLocalUserCmd.Flags().StringP("user", "u", "",
+                                    "username of the user to update")
+    updateLocalUserCmd.Flags().IntP("revision", "R", 0,
+                                 "Revision number of the user")
+    updateLocalUserCmd.Flags().StringP("name", "n", "",
+                                    "Full Name of the User")
+    updateLocalUserCmd.Flags().StringP("account-status", "s", "",
+                                    "Account status of the User")
+
     // mark mandatory fields as required
-    ConfigureHPCSKEK.MarkFlagRequired("hpcs_url")
-    ConfigureHPCSKEK.MarkFlagRequired("hpcs_api_key")
-    ConfigureHPCSKEK.MarkFlagRequired("hpcs_instance_id")
-    ConfigureHPCSKEK.MarkFlagRequired("revision")
+    updateLocalUserCmd.MarkFlagRequired("user")
+    updateLocalUserCmd.MarkFlagRequired("revision")
 }

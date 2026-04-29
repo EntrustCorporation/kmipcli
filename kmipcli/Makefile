@@ -3,7 +3,7 @@
 #
 THISDIR = $(shell pwd)
 
-GOCMD = /usr/local/go21/bin/go
+GOCMD = /usr/local/go/bin/go
 
 KMIPCLI_SRCDIR = $(THISDIR)
 PARENTDIR = $(THISDIR)/..
@@ -17,7 +17,6 @@ KMIPCLI_MAINGO = main.go
 
 KMIPCLI_LINUX = kmipcli
 KMIPCLI_WINDOWS = kmipcli.exe
-KMIPCLI_MAC = kmipcli.app
 
 all:
 	@/usr/bin/echo "Clearing old Workspace if any at $(WORKSPACE).."
@@ -30,11 +29,10 @@ all:
 	@/usr/bin/cp -r $(PARENTDIR)/cmd/. $(WORKSPACE_SRCDIR)/cmd/
 	@cd $(WORKSPACE_SRCDIR) && $(GOCMD) mod init cli
 	@cd $(WORKSPACE_SRCDIR) && $(GOCMD) mod tidy
-	@/usr/bin/echo "Compiling kmipcli for Linux, Windows & Mac..."
+	@/usr/bin/echo "Compiling kmipcli for Linux & Windows..."
 	@cd $(WORKSPACE_SRCDIR) && (env GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(WORKSPACE_BINDIR)/$(KMIPCLI_LINUX) $(KMIPCLI_MAINGO))
 	@cd $(WORKSPACE_SRCDIR) && (env GOOS=windows GOARCH=amd64 $(GOCMD) build -o $(WORKSPACE_BINDIR)/$(KMIPCLI_WINDOWS) $(KMIPCLI_MAINGO))
-	@cd $(WORKSPACE_SRCDIR) && (env GOOS=darwin GOARCH=amd64 $(GOCMD) build -o $(WORKSPACE_BINDIR)/$(KMIPCLI_MAC) $(KMIPCLI_MAINGO))
-	@/usr/bin/echo "Please find respective Linux, Windows & Mac kmipcli binaries, $(KMIPCLI_LINUX), $(KMIPCLI_WINDOWS) & $(KMIPCLI_MAC) at $(WORKSPACE_BINDIR)"
+	@/usr/bin/echo "Please find respective Linux & Windows kmipcli binaries, $(KMIPCLI_LINUX) & $(KMIPCLI_WINDOWS) at $(WORKSPACE_BINDIR)"
 
 install:
 

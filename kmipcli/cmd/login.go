@@ -20,12 +20,14 @@ import (
 	// standard
 
 	"bufio"
+	"cli/getpasswd"
 	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
-	"cli/getpasswd"
+
 	"github.com/spf13/cobra"
 )
 
@@ -42,6 +44,10 @@ type accessToken struct {
 	Expiration string `json:"expires_at"`
 	User       string `json:"user"`
 }
+
+var VaultName = "KMIP Vault"
+
+var login_url_pattern = `^https://\d{1,3}(\.\d{1,3}){3}/kmipTenant/1\.0/Login/[0-9a-fA-F-]+/?$`
 
 func getCredentials(prefix, user, password string) (string, string) {
 
@@ -77,20 +83,17 @@ func loginAPI(cmd *cobra.Command, args []string) {
 		fmt.Printf("\n")
 		username, password = getCredentials("", username, password)
 	}
-	
+
 	// create request payload
 	params["username"] = username
 	params["password"] = password
 
 	// login URL
 	loginURL, _ := flags.GetString(loginOptionLoginURL)
-	if !strings.HasPrefix(loginURL, "https://") {
-		fmt.Printf("Provide complete login URL\n")
+	matched, err := regexp.MatchString(login_url_pattern, loginURL)
+	if err != nil || !matched {
+		fmt.Printf("Invalid %s login URL: %s\nPlease provide a valid login URL for %s\nExpected format: https://<ip>/kmipTenant/1.0/Login/<vaultid>/\n", VaultName, loginURL, VaultName)
 		os.Exit(1)
-	}
-	// append trailing slash - Kmip Server (Django) requires it
-	if !strings.HasSuffix(loginURL, "/") {
-		loginURL = loginURL + "/"
 	}
 	uri, err := url.Parse(loginURL)
 	if err != nil {
@@ -145,7 +148,7 @@ func init() {
 	loginCmd.Flags().StringP(loginOptionPassword, "p", "",
 		"Login password. You will be prompted to enter if not provided.")
 	loginCmd.Flags().StringP(loginOptionLoginURL, "l", "",
-		"Login URL")
+		"API Login URL")
 
 	// mark mandatory fields as required
 	loginCmd.MarkFlagRequired(loginOptionCACert)

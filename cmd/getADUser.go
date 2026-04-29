@@ -27,12 +27,17 @@ import (
 )
 
 
-// getKmipSettingsCmd represents the get-kmip-settings command
-var getKmipSettingsCmd = &cobra.Command{
-    Use:   "get-tenant-settings",
-    Short: "Get Kmip Tenant settings",
+// getADUserCmd represents the get-ad-user command
+var getADUserCmd = &cobra.Command{
+    Use:   "get-ad-user",
+    Short: "Search Active Directory users",
     Run: func(cmd *cobra.Command, args []string) {
+        flags := cmd.Flags()
         params := map[string]interface{}{}
+
+        // create request payload
+        ADUsername, _ := flags.GetString("name")
+        params["name"] = ADUsername
 
         // JSONify
         jsonParams, err := json.Marshal(params)
@@ -42,7 +47,7 @@ var getKmipSettingsCmd = &cobra.Command{
         }
 
         // now POST
-        endpoint := GetEndPoint("", "1.0", "GetTenantSettings")
+        endpoint := GetEndPoint("", "1.0", "GetADUser")
         ret, err := DoPost(endpoint,
                                GetCACertFile(),
                                AuthTokenKV(),
@@ -58,7 +63,7 @@ var getKmipSettingsCmd = &cobra.Command{
             retStr := retBytes.String()
 
             if (retStr == "" && retStatus == 404) {
-                fmt.Println("\nKmip settings not found\n")
+                fmt.Println("\nNo AD User(s) found\n")
                 os.Exit(5)
             }
 
@@ -76,5 +81,10 @@ var getKmipSettingsCmd = &cobra.Command{
 }
 
 func init() {
-    rootCmd.AddCommand(getKmipSettingsCmd)
+    rootCmd.AddCommand(getADUserCmd)
+    getADUserCmd.Flags().StringP("name", "n", "",
+                                 "Prefix of the username for searching")
+
+    // mark mandatory fields as required
+    getADUserCmd.MarkFlagRequired("name")
 }
