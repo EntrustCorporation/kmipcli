@@ -4,7 +4,7 @@ kmipmcli is a command line tool to manage, control Entrust KMIP type Vault. All 
 
 Entrust KMIP vault provides secure storage in addition to all key management features described by OASIS KMIP specification.
 
-1. The kmipcli requires Entrust KeyControl version 5.2 or later.
+1. The kmipcli requires Entrust Cryptographic Security Platform Vault version 5.2 or later.
 2. The KMIP Vault must be created by the KeyControl Vault Administrator.
 3. To manage the Vault using the kmipcli, you must be the admin for that KMIP Vault and have the login API URL of that vault.
 4. All users authorized to access the Vault can use the kmipcli with the login URL.
