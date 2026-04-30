@@ -11,7 +11,7 @@ Entrust KMIP vault provides secure storage in addition to all key management fea
 
 ## Releases
 
-kmipcli for Linux for each release can be found in Releases section (https://github.com/EntrustCorporation/kmipcli/releases) 
+kmipcli for Linux, for each release can be found in Releases section (https://github.com/EntrustCorporation/kmipcli/releases) 
 
 ## Build instruction
 
@@ -32,7 +32,7 @@ The code in this repo corresponds to the latest released version of kmipcli. In 
 
    ```$ gmake clean```
 
-For more information, see the "Cryptographic Security Vault for KMIP" chapter in the Key Management Systems documentation at https://trustedcare.entrust.com/.
+For more information, see the "Cryptographic Security Platform Vault for KMIP" chapter in the Key Management Systems documentation at https://trustedcare.entrust.com/.
 
 ##Usage examples
 
