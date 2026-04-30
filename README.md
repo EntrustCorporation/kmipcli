@@ -32,7 +32,7 @@ The code in this repo corresponds to the latest released version of kmipcli. In 
 
    ```$ gmake clean```
 
-For more information, see the Secrets Vault chapter in the Key Management Systems documentation at https://trustedcare.entrust.com/.
+For more information, see the "Cryptographic Security Vault for KMIP" chapter in the Key Management Systems documentation at https://trustedcare.entrust.com/.
 
 ##Usage examples
 
