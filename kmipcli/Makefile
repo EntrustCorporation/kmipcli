@@ -16,7 +16,6 @@ WORKSPACE_BINDIR = $(WORKSPACE)/bin
 KMIPCLI_MAINGO = main.go
 
 KMIPCLI_LINUX = kmipcli
-KMIPCLI_WINDOWS = kmipcli.exe
 
 all:
 	@/usr/bin/echo "Clearing old Workspace if any at $(WORKSPACE).."
@@ -29,10 +28,9 @@ all:
 	@/usr/bin/cp -r $(PARENTDIR)/cmd/. $(WORKSPACE_SRCDIR)/cmd/
 	@cd $(WORKSPACE_SRCDIR) && $(GOCMD) mod init cli
 	@cd $(WORKSPACE_SRCDIR) && $(GOCMD) mod tidy
-	@/usr/bin/echo "Compiling kmipcli for Linux & Windows..."
+	@/usr/bin/echo "Compiling kmipcli for Linux..."
 	@cd $(WORKSPACE_SRCDIR) && (env GOOS=linux GOARCH=amd64 $(GOCMD) build -o $(WORKSPACE_BINDIR)/$(KMIPCLI_LINUX) $(KMIPCLI_MAINGO))
-	@cd $(WORKSPACE_SRCDIR) && (env GOOS=windows GOARCH=amd64 $(GOCMD) build -o $(WORKSPACE_BINDIR)/$(KMIPCLI_WINDOWS) $(KMIPCLI_MAINGO))
-	@/usr/bin/echo "Please find respective Linux & Windows kmipcli binaries, $(KMIPCLI_LINUX) & $(KMIPCLI_WINDOWS) at $(WORKSPACE_BINDIR)"
+	@/usr/bin/echo "Please find Linux kmipcli binary, $(KMIPCLI_LINUX) at $(WORKSPACE_BINDIR)"
 
 install:
 
